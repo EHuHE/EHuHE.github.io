@@ -1,0 +1,55 @@
+---
+import {
+  BookOpen,
+  Boxes,
+  Code2,
+  ExternalLink,
+  FileText,
+  Github,
+  Mail,
+  Rss,
+} from "lucide-astro";
+import { withBasePath } from "../lib/url";
+
+interface Entry {
+  title: string;
+  description: string;
+  href: string;
+  icon: "article" | "project" | "github" | "mail" | "rss" | "tool";
+  external?: boolean;
+}
+
+interface Props {
+  entries: Entry[];
+}
+
+const { entries } = Astro.props;
+const icons = {
+  article: FileText,
+  project: Boxes,
+  github: Github,
+  mail: Mail,
+  rss: Rss,
+  tool: Code2,
+};
+---
+
+<div class="content-entry-list" data-testid="content-entry-list">
+  {
+    entries.map((entry) => {
+      const Icon = icons[entry.icon] ?? BookOpen;
+      return (
+        <a class="content-entry" href={withBasePath(entry.href)} target={entry.external ? "_blank" : undefined} rel={entry.external ? "noreferrer" : undefined}>
+          <span class="entry-icon" aria-hidden="true">
+            <Icon size={22} />
+          </span>
+          <span>
+            <strong>{entry.title}</strong>
+            <small>{entry.description}</small>
+          </span>
+          <ExternalLink size={16} aria-hidden="true" />
+        </a>
+      );
+    })
+  }
+</div>

@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../components/BaseLayout.astro";
+import PostRows from "../../components/PostRows.astro";
+import { getUniqueTags, getVisiblePosts } from "../../lib/content";
+import { toPostSummary } from "../../lib/entries";
+
+const postEntries = await getCollection("posts");
+const posts = getVisiblePosts(postEntries.map(toPostSummary));
+const tags = getUniqueTags(posts);
+---
+
+<BaseLayout title="Posts" description="Research notes and technical writing by He Hu.">
+  <section class="page-hero">
+    <div class="shell narrow">
+      <p class="eyebrow">Articles</p>
+      <h1>Research Notes</h1>
+      <p>
+        Notes on programming, research tooling, static sites, TypeScript, testing, and AI-assisted
+        development. These posts are writing notes, not a publication list.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell">
+      <div class="post-tools">
+        <label class="search-field">
+          <span>Search posts</span>
+          <input type="search" placeholder="Search by title, summary, or tag" data-post-search />
+        </label>
+        <p class="post-count" data-post-count>{posts.length} posts</p>
+      </div>
+
+      <div class="filter-bar" aria-label="Filter posts by tag">
+        <button type="button" data-tag-filter="all" aria-pressed="true">All</button>
+        {tags.map((tag) => <button type="button" data-tag-filter={tag} aria-pressed="false">{tag}</button>)}
+      </div>
+
+      <PostRows posts={posts} />
+      <p class="empty-state" data-post-empty-state hidden>No posts match the current filters.</p>
+    </div>
+  </section>
+</BaseLayout>

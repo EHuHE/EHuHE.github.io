@@ -1,0 +1,60 @@
+---
+import { getCollection } from "astro:content";
+import { ExternalLink } from "lucide-astro";
+import BaseLayout from "../components/BaseLayout.astro";
+import { toLinkSummary, toWorkSummary } from "../lib/entries";
+import { withBasePath } from "../lib/url";
+
+const linkEntries = await getCollection("links");
+const workEntries = await getCollection("works");
+const links = linkEntries.map(toLinkSummary).sort((firstLink, secondLink) => firstLink.order - secondLink.order);
+const works = workEntries.map(toWorkSummary);
+---
+
+<BaseLayout title="Links" description="Public links, contact details, and feeds for He Hu.">
+  <section class="page-hero">
+    <div class="shell narrow">
+      <p class="eyebrow">Links</p>
+      <h1>Links</h1>
+      <p>Public profile links, contact routes, and subscription entries for this academic homepage.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell links-grid">
+      <div>
+        <h2>Public Links</h2>
+        <div class="link-list">
+          {
+            links.map((link) => (
+              <a href={withBasePath(link.url)} target={link.url.startsWith("https:") ? "_blank" : undefined} rel={link.url.startsWith("https:") ? "noreferrer" : undefined}>
+                <span>
+                  <strong>{link.title}</strong>
+                  <small>{link.description}</small>
+                </span>
+                <ExternalLink size={16} aria-hidden="true" />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <div>
+        <h2>Site Resources</h2>
+        <div class="link-list">
+          {
+            works.map((work) => (
+              <a href={withBasePath(work.externalUrl ?? "/posts/")} target={work.externalUrl?.startsWith("https:") ? "_blank" : undefined} rel={work.externalUrl?.startsWith("https:") ? "noreferrer" : undefined}>
+                <span>
+                  <strong>{work.title}</strong>
+                  <small>{work.description}</small>
+                </span>
+                <ExternalLink size={16} aria-hidden="true" />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

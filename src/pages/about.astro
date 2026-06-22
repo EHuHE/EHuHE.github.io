@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+import { siteProfile } from "../lib/site";
+---
+
+<BaseLayout title="About" description="Academic background, contact details, and current focus for He Hu.">
+  <section class="page-hero">
+    <div class="shell narrow">
+      <p class="eyebrow">About</p>
+      <h1>About He Hu</h1>
+      <p>
+        I am a graduate student at the School of Cryptography, Hubei University, and a student
+        in the Fang Binxing Academician Experimental Class
+        <span lang="zh-CN">（方滨兴院士实验班）</span>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell about-grid">
+      <article>
+        <h2>Academic Profile</h2>
+        <p>
+          This site keeps a concise public record of my affiliation, contact information,
+          research interests, and writing notes. It is intended to remain factual and suitable
+          for academic identity verification.
+        </p>
+      </article>
+      <article>
+        <h2>Research Interests</h2>
+        <ul class="check-list">
+          {siteProfile.researchInterests.map((interest) => <li><strong>{interest}</strong></li>)}
+        </ul>
+      </article>
+      <article>
+        <h2>Contact</h2>
+        <p>
+          Email is shown in plain text to support academic profile verification and direct
+          contact.
+        </p>
+        <p><strong>Email:</strong> <a href={`mailto:${siteProfile.email}`}>{siteProfile.email}</a></p>
+        <a class="button primary" href={`mailto:${siteProfile.email}`}>Send email</a>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

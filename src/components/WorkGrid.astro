@@ -1,0 +1,45 @@
+---
+import { ArrowUpRight, Code2, Library, NotebookTabs } from "lucide-astro";
+import type { WorkSummary } from "../lib/entries";
+import { withBasePath } from "../lib/url";
+
+interface Props {
+  works: WorkSummary[];
+}
+
+const { works } = Astro.props;
+const icons = {
+  project: Code2,
+  resource: Library,
+  note: NotebookTabs,
+};
+---
+
+<div class="work-grid">
+  {
+    works.map((work) => {
+      const Icon = icons[work.type];
+      return (
+        <article class="work-card">
+          <div class="work-card-top">
+            <span class="entry-icon" aria-hidden="true">
+              <Icon size={22} />
+            </span>
+            <span class="tag">{work.type === "project" ? "项目" : work.type === "resource" ? "资源" : "笔记"}</span>
+          </div>
+          <h3>{work.title}</h3>
+          <p>{work.description}</p>
+          <div class="tag-list">
+            {work.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+          <a href={withBasePath(work.externalUrl ?? "/links/")} target={work.externalUrl?.startsWith("https:") ? "_blank" : undefined} rel={work.externalUrl?.startsWith("https:") ? "noreferrer" : undefined}>
+            查看详情
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        </article>
+      );
+    })
+  }
+</div>

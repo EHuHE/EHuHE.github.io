@@ -1,0 +1,33 @@
+---
+import { ArrowUp, Github, Mail, Rss } from "lucide-astro";
+import { navigationItems, siteProfile } from "../lib/site";
+import { withBasePath } from "../lib/url";
+---
+
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div>
+      <p class="footer-label">{siteProfile.label}</p>
+      <p>{siteProfile.description}</p>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      {navigationItems.map((item) => <a href={withBasePath(item.href)}>{item.label}</a>)}
+    </nav>
+
+    <div class="footer-social">
+      <a href={siteProfile.githubUrl} aria-label="GitHub">
+        <Github size={18} />
+      </a>
+      <a href={`mailto:${siteProfile.email}`} aria-label="Email">
+        <Mail size={18} />
+      </a>
+      <a href={withBasePath(siteProfile.rssUrl)} aria-label="RSS">
+        <Rss size={18} />
+      </a>
+      <a href="#top" aria-label="Back to top">
+        <ArrowUp size={18} />
+      </a>
+    </div>
+  </div>
+</footer>

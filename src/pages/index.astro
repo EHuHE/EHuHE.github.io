@@ -1,0 +1,141 @@
+---
+import { getCollection } from "astro:content";
+import { BookOpen, Github, Mail } from "lucide-astro";
+import BaseLayout from "../components/BaseLayout.astro";
+import PostRows from "../components/PostRows.astro";
+import { getRecentPosts } from "../lib/content";
+import { toPostSummary } from "../lib/entries";
+import { siteProfile } from "../lib/site";
+import { withBasePath } from "../lib/url";
+
+const postEntries = await getCollection("posts");
+const recentPosts = getRecentPosts(postEntries.map(toPostSummary), 3);
+---
+
+<BaseLayout title="Home" description={siteProfile.description}>
+  <section class="academic-hero">
+    <div class="shell academic-grid">
+      <div class="academic-profile">
+        <p class="eyebrow">{siteProfile.role}</p>
+        <h1>{siteProfile.name}</h1>
+        <p class="chinese-name">Chinese name: {siteProfile.chineseName}</p>
+        <p class="academic-role">{siteProfile.role}</p>
+        <p class="academic-affiliation">{siteProfile.institution}</p>
+        <p class="academic-affiliation">
+          {siteProfile.program}
+          <span lang="zh-CN">（{siteProfile.programChineseName}）</span>
+        </p>
+
+        <p class="academic-summary">
+          I am a graduate student at the School of Cryptography, Hubei University, and a
+          student in the Fang Binxing Academician Experimental Class
+          <span lang="zh-CN">（方滨兴院士实验班）</span>. My academic interests include
+          machine learning, natural language processing, knowledge graphs, information
+          retrieval, and AI agents. I am currently reading recent academic literature,
+          developing my research skills, and preparing work for initial academic submission.
+          This page lists my academic affiliation, contact information, research interests,
+          and public profile links.
+        </p>
+
+        <p class="verification-note">
+          The email address below is shown in plain text so that academic systems and
+          conference platforms can verify my identity and affiliation.
+        </p>
+
+        <div class="academic-actions">
+          <a class="button primary" href={withBasePath("/posts/")}>
+            <BookOpen size={18} aria-hidden="true" />
+            Read Posts
+          </a>
+          <a class="button secondary" href={`mailto:${siteProfile.email}`}>
+            <Mail size={18} aria-hidden="true" />
+            Email
+          </a>
+          <a class="button secondary" href={siteProfile.githubUrl}>
+            <Github size={18} aria-hidden="true" />
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <aside class="academic-card" id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact</h2>
+        <dl class="academic-facts">
+          <div>
+            <dt>Email</dt>
+            <dd><a href={`mailto:${siteProfile.email}`}>{siteProfile.email}</a></dd>
+          </div>
+          <div>
+            <dt>Affiliation</dt>
+            <dd>{siteProfile.institution}</dd>
+          </div>
+          <div>
+            <dt>Program</dt>
+            <dd>{siteProfile.program} <span lang="zh-CN">（{siteProfile.programChineseName}）</span></dd>
+          </div>
+          <div>
+            <dt>Location</dt>
+            <dd>China</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section academic-section">
+    <div class="shell academic-content-grid">
+      <div>
+        <section aria-labelledby="interests-heading">
+          <h2 id="interests-heading">Research Interests</h2>
+          <ul class="academic-list">
+            {siteProfile.researchInterests.map((interest) => <li>{interest}</li>)}
+          </ul>
+        </section>
+
+        <section aria-labelledby="focus-heading">
+          <h2 id="focus-heading">Current Academic Focus</h2>
+          <p>
+            My current work is focused on strengthening my research foundation, reviewing
+            recent literature, and preparing research work for early academic submission.
+            My graduate study is also connected with the Fang Binxing Academician
+            Experimental Class at Hubei University. This page does not list publications,
+            awards, advisors, or projects unless they are ready to be shared accurately.
+          </p>
+        </section>
+
+        <section aria-labelledby="publications-heading">
+          <h2 id="publications-heading">Publications</h2>
+          <p>
+            No public publications are listed on this page at this time. Future publications
+            will be added only when they are publicly available and can be cited accurately.
+          </p>
+        </section>
+      </div>
+
+      <aside class="academic-card" aria-labelledby="links-heading">
+        <h2 id="links-heading">Links</h2>
+        <ul class="profile-links">
+          <li><a href={siteProfile.githubUrl} rel="me">github.com/EHuHE</a></li>
+          <li><a href={withBasePath("/rss.xml")}>RSS feed</a></li>
+        </ul>
+        <p class="small-note">
+          Google Scholar, ORCID, DBLP, Semantic Scholar, and other academic identifiers will
+          be added after the corresponding public profiles are available.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section academic-section section-muted">
+    <div class="shell section-heading-row">
+      <div>
+        <p class="eyebrow">Notes</p>
+        <h2>Recent Research Notes</h2>
+      </div>
+      <a class="text-link" href={withBasePath("/posts/")}>View all posts</a>
+    </div>
+    <div class="shell">
+      <PostRows posts={recentPosts} compact />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../components/BaseLayout.astro";
+import { formatDate, getRecentPosts } from "../../lib/content";
+import { toPostSummary } from "../../lib/entries";
+import { withBasePath } from "../../lib/url";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const relatedPosts = getRecentPosts(
+  allPosts.map(toPostSummary).filter((item) => item.id !== post.id),
+  3,
+);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="article-page">
+    <header class="article-header shell narrow">
+      <a class="text-link" href={withBasePath("/posts/")}>Back to all posts</a>
+      <p class="eyebrow">{post.data.tags.join(" / ")}</p>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+      <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+    </header>
+
+    <div class="article-body shell narrow">
+      <Content />
+    </div>
+  </article>
+
+  <section class="section section-muted">
+    <div class="shell narrow">
+      <h2>Continue Reading</h2>
+      <div class="related-list">
+        {
+          relatedPosts.map((item) => (
+            <a href={withBasePath(`/posts/${item.slug}/`)}>
+              <strong>{item.title}</strong>
+              <span>{formatDate(item.pubDate)}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+title: "用 TypeScript 描述 API 契约，而不是实现细节"
+description: "API 类型应该帮助调用方理解数据形状、失败模式和兼容边界。"
+pubDate: 2026-04-19
+tags: ["TypeScript", "API设计"]
+featured: false
+---
+
+API 类型最该表达的是契约，而不是某个函数内部刚好怎么写。
+
+```ts
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+```
+
+这种 envelope 不一定适合所有项目，但它说明了一个原则：调用方应该能从类型上知道请求是否成功、成功时拿什么、失败时看哪里。
+
+当接口跨过模块、服务或团队边界，类型就不再只是编辑器提示，而是协作协议。

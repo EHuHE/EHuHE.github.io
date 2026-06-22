@@ -1,0 +1,53 @@
+---
+import SiteFooter from "./SiteFooter.astro";
+import SiteHeader from "./SiteHeader.astro";
+import { siteProfile } from "../lib/site";
+import { withBasePath, withoutBasePath } from "../lib/url";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const title = Astro.props.title
+  ? `${Astro.props.title} | ${siteProfile.label}`
+  : `${siteProfile.name} | ${siteProfile.label}`;
+const description = Astro.props.description ?? siteProfile.description;
+const canonicalUrl = new URL(
+  withBasePath(withoutBasePath(Astro.url.pathname)),
+  Astro.site ?? Astro.url.origin,
+);
+---
+
+<!doctype html>
+<html lang="en" data-theme="light" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <title>{title}</title>
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = savedTheme ?? (prefersDark ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to main content</a>
+    <SiteHeader />
+    <main id="content">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      import "../scripts/site";
+    </script>
+  </body>
+</html>
