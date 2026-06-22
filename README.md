@@ -2,6 +2,8 @@
 
 Astro static site for the academic homepage and research notes of He Hu (胡禾). The site is designed for GitHub Pages and keeps the OpenReview verification information visible on the public homepage.
 
+Public URL: <https://ehuhe.github.io/>
+
 ## 开发
 
 ```bash
