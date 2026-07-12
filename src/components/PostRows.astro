@@ -1,5 +1,5 @@
 ---
-import { ArrowRight } from "lucide-astro";
+import { ArrowUpRight } from "lucide-astro";
 import type { PostSummary } from "../lib/content";
 import { formatDate } from "../lib/content";
 import { withBasePath } from "../lib/url";
@@ -14,9 +14,18 @@ const { posts, compact = false } = Astro.props;
 
 <div class:list={["post-table", { compact }]} role="table" aria-label="Post list">
   <div class="post-row post-row-head" role="row">
-    <span role="columnheader">Title</span>
-    <span role="columnheader">Tags</span>
-    <span role="columnheader">Date</span>
+    <span role="columnheader">
+      <span class="i18n-en">Title</span>
+      <span class="i18n-zh" lang="zh-CN">标题</span>
+    </span>
+    <span role="columnheader">
+      <span class="i18n-en">Tags</span>
+      <span class="i18n-zh" lang="zh-CN">标签</span>
+    </span>
+    <span role="columnheader">
+      <span class="i18n-en">Date</span>
+      <span class="i18n-zh" lang="zh-CN">日期</span>
+    </span>
   </div>
   {
     posts.map((post) => (
@@ -27,11 +36,12 @@ const { posts, compact = false } = Astro.props;
         data-tags={post.tags.join("|")}
         data-search={[post.title, post.description, ...post.tags].join(" ")}
       >
-        <div role="cell">
+        <div class="post-title-cell" role="cell">
           <a class="post-title" href={withBasePath(`/posts/${post.slug}/`)}>
             <span>{post.title}</span>
-            <ArrowRight size={16} aria-hidden="true" />
+            <ArrowUpRight size={15} aria-hidden="true" />
           </a>
+          <p class="post-description">{post.description}</p>
         </div>
         <div class="tag-list" role="cell" aria-label={`${post.title} tags`}>
           {post.tags.map((tag) => (

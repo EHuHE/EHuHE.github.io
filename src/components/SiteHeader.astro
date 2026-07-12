@@ -1,5 +1,5 @@
 ---
-import { GraduationCap, Menu, Moon, Sun, X } from "lucide-astro";
+import { Mail, Menu, Moon, Sun, X } from "lucide-astro";
 import { navigationItems, siteProfile } from "../lib/site";
 import { withBasePath, withoutBasePath } from "../lib/url";
 
@@ -17,26 +17,25 @@ function isActive(href: string) {
 <header class="site-header">
   <div class="shell header-inner">
     <a class="brand" href={withBasePath("/")} aria-label={`${siteProfile.name} homepage`}>
-      <span class="brand-mark" aria-hidden="true">
-        <GraduationCap size={21} stroke-width={2.1} />
-      </span>
-      <span>
-        <strong>{siteProfile.name}</strong>
-        <small>{siteProfile.label}</small>
-      </span>
+      <strong>{siteProfile.name}</strong>
     </a>
 
     <nav class="desktop-nav" aria-label="Primary navigation">
       {
         navigationItems.map((item) => (
           <a href={withBasePath(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
-            {item.label}
+            <span class="i18n-en">{item.label}</span>
+            <span class="i18n-zh" lang="zh-CN">{item.labelZh}</span>
           </a>
         ))
       }
     </nav>
 
     <div class="header-actions">
+      <button class="language-toggle" type="button" aria-label="Switch to Chinese" data-language-toggle>
+        <span class="i18n-en">中文</span>
+        <span class="i18n-zh" lang="zh-CN">EN</span>
+      </button>
       <button class="icon-button theme-toggle" type="button" aria-label="Switch to dark theme" data-theme-toggle>
         <span class="theme-icon theme-icon-light" aria-hidden="true">
           <Sun size={18} />
@@ -61,11 +60,17 @@ function isActive(href: string) {
 
   <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" data-testid="mobile-nav" data-mobile-nav hidden>
     {
-      navigationItems.map((item) => (
-        <a href={withBasePath(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
-          {item.label}
-        </a>
-      ))
-    }
+        navigationItems.map((item) => (
+          <a href={withBasePath(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
+            <span class="i18n-en">{item.label}</span>
+            <span class="i18n-zh" lang="zh-CN">{item.labelZh}</span>
+          </a>
+        ))
+      }
+      <a class="mobile-contact" href={`mailto:${siteProfile.email}`}>
+        <Mail size={16} aria-hidden="true" />
+        <span class="i18n-en">Contact</span>
+        <span class="i18n-zh" lang="zh-CN">联系</span>
+      </a>
   </nav>
 </header>

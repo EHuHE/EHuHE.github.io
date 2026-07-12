@@ -32,8 +32,15 @@ export function getRecentPosts<T extends Pick<PostSummary, "draft" | "pubDate">>
 
 export function getFeaturedPosts<
   T extends Pick<PostSummary, "draft" | "featured" | "pubDate">,
->(posts: readonly T[]): T[] {
-  return getVisiblePosts(posts).filter((post) => post.featured);
+>(posts: readonly T[], limit: number): T[] {
+  const visiblePosts = getVisiblePosts(posts);
+  const featuredPosts = visiblePosts.filter((post) => post.featured);
+  const remainingSlots = Math.max(0, limit - featuredPosts.length);
+
+  return [
+    ...featuredPosts.slice(0, limit),
+    ...visiblePosts.filter((post) => !post.featured).slice(0, remainingSlots),
+  ];
 }
 
 export function getUniqueTags(posts: readonly Pick<PostSummary, "tags" | "draft">[]): string[] {

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import { ExternalLink } from "lucide-astro";
 import BaseLayout from "../components/BaseLayout.astro";
+import IconFont from "../components/IconFont.astro";
 import { toLinkSummary, toWorkSummary } from "../lib/entries";
 import { withBasePath } from "../lib/url";
 
@@ -32,7 +32,7 @@ const works = workEntries.map(toWorkSummary);
                   <strong>{link.title}</strong>
                   <small>{link.description}</small>
                 </span>
-                <ExternalLink size={16} aria-hidden="true" />
+                <IconFont name="arrow-top-right" size={16} />
               </a>
             ))
           }
@@ -49,7 +49,7 @@ const works = workEntries.map(toWorkSummary);
                   <strong>{work.title}</strong>
                   <small>{work.description}</small>
                 </span>
-                <ExternalLink size={16} aria-hidden="true" />
+                <IconFont name="arrow-top-right" size={16} />
               </a>
             ))
           }

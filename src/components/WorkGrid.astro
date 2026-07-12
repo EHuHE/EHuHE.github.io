@@ -1,5 +1,5 @@
 ---
-import { ArrowUpRight, Code2, Library, NotebookTabs } from "lucide-astro";
+import IconFont from "./IconFont.astro";
 import type { WorkSummary } from "../lib/entries";
 import { withBasePath } from "../lib/url";
 
@@ -9,23 +9,36 @@ interface Props {
 
 const { works } = Astro.props;
 const icons = {
-  project: Code2,
-  resource: Library,
-  note: NotebookTabs,
+  project: "ai-design",
+  resource: "file-info",
+  note: "project-log",
+};
+
+const typeLabels = {
+  project: { en: "Project", zh: "项目" },
+  resource: { en: "Resource", zh: "资源" },
+  note: { en: "Note", zh: "笔记" },
 };
 ---
 
 <div class="work-grid">
   {
     works.map((work) => {
-      const Icon = icons[work.type];
+      const iconName = icons[work.type];
+      const typeLabel = typeLabels[work.type];
       return (
-        <article class="work-card">
+        <article class={`work-card work-card-${work.type}`}>
+          <div class="work-visual" aria-hidden="true">
+            <span>{work.type === "project" ? "01" : work.type === "resource" ? "02" : "03"}</span>
+          </div>
           <div class="work-card-top">
             <span class="entry-icon" aria-hidden="true">
-              <Icon size={22} />
+              <IconFont name={iconName} size={22} />
             </span>
-            <span class="tag">{work.type === "project" ? "项目" : work.type === "resource" ? "资源" : "笔记"}</span>
+            <span class="tag">
+              <span class="i18n-en">{typeLabel.en}</span>
+              <span class="i18n-zh" lang="zh-CN">{typeLabel.zh}</span>
+            </span>
           </div>
           <h3>{work.title}</h3>
           <p>{work.description}</p>
@@ -35,8 +48,9 @@ const icons = {
             ))}
           </div>
           <a href={withBasePath(work.externalUrl ?? "/links/")} target={work.externalUrl?.startsWith("https:") ? "_blank" : undefined} rel={work.externalUrl?.startsWith("https:") ? "noreferrer" : undefined}>
-            查看详情
-            <ArrowUpRight size={16} aria-hidden="true" />
+            <span class="i18n-en">View details</span>
+            <span class="i18n-zh" lang="zh-CN">查看详情</span>
+            <IconFont name="arrow-top-right" size={16} />
           </a>
         </article>
       );

@@ -81,10 +81,37 @@ describe("content utilities", () => {
     ]);
   });
 
-  it("returns featured posts in date order", () => {
-    expect(getFeaturedPosts(posts).map((post) => post.id)).toEqual([
+  it("prioritizes featured posts and fills remaining slots with recent visible posts", () => {
+    const newerRegularPost = {
+      id: "latest-regular-note",
+      slug: "latest-regular-note",
+      title: "最新的普通文章",
+      description: "日期比精选文章新，但仍应在精选文章之后补位",
+      pubDate: new Date("2026-06-10"),
+      tags: ["随笔"],
+      featured: false,
+      draft: false,
+    };
+    const draftFeaturedPost = {
+      id: "draft-featured-note",
+      slug: "draft-featured-note",
+      title: "草稿精选文章",
+      description: "即使标记为精选也不应展示",
+      pubDate: new Date("2026-06-12"),
+      tags: ["随笔"],
+      featured: true,
+      draft: true,
+    };
+
+    expect(
+      getFeaturedPosts([...posts, newerRegularPost, draftFeaturedPost], 4).map(
+        (post) => post.id,
+      ),
+    ).toEqual([
       "typescript-notes",
       "astro-blog",
+      "latest-regular-note",
+      "testing-loop",
     ]);
   });
 

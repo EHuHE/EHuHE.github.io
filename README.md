@@ -46,13 +46,15 @@ featured: true
 
 ## 部署建议
 
-这个项目是纯静态 Astro 站点。除非明确需要后端服务，否则优先用 GitHub Pages、Cloudflare Pages 或 Vercel。
+这个项目是纯静态 Astro 站点。除非明确需要后端服务，否则优先用“域名 + 托管静态平台”，不需要单独购买云服务器。
 
 推荐顺序：
 
-1. GitHub Pages：适合用户主页仓库 `EHuHE/EHuHE.github.io`，根路径为 `https://ehuhe.github.io/`。
-2. Cloudflare Pages / Vercel：推送 GitHub 后自动构建，有 HTTPS 和 CDN，不需要运维服务器。
-3. 云服务器 + Docker + Nginx：控制力最强，但维护成本最高。
+1. Vercel / Cloudflare Pages + 自定义域名：推送 GitHub 后自动构建，有 HTTPS 和 CDN，维护成本最低。
+2. GitHub Pages：适合用户主页仓库 `EHuHE/EHuHE.github.io`，根路径为 `https://ehuhe.github.io/`，也可以绑定自定义域名。
+3. 云服务器 + Docker + Nginx：控制力最强，但需要长期维护系统、证书、反代和安全更新。
+
+域名可以在阿里云、腾讯云、Cloudflare Registrar、Namecheap、NameSilo 等注册商购买。注册商只负责域名和 DNS，网站文件仍然部署到 Vercel / Cloudflare Pages / GitHub Pages。
 
 ### 托管静态平台
 
@@ -68,9 +70,29 @@ npm run build
 dist
 ```
 
-Vercel 可直接导入仓库部署，不需要 Astro Vercel adapter。Cloudflare Pages 也可直接连接 GitHub 仓库，选择 npm，构建命令 `npm run build`，输出目录 `dist`。
+Vercel 可直接导入仓库部署。这个项目是静态 Astro 站点，不需要 `@astrojs/vercel` adapter；只有需要 Vercel Web Analytics、Image Optimization、SSR/按需渲染等平台特性时，才考虑添加 adapter。
 
-用户主页仓库部署时建议设置：
+Vercel 项目建议设置：
+
+```bash
+SITE_URL=https://你的域名
+BASE_PATH=/
+```
+
+Framework Preset 选择 Astro，Build Command 使用 `npm run build`，Output Directory 使用 `dist`。Cloudflare Pages 也可直接连接 GitHub 仓库，选择 npm，构建命令 `npm run build`，输出目录 `dist`。
+
+### 自定义域名 DNS
+
+在 Vercel 项目的 Domains 页面添加域名后，按页面提示到域名注册商的 DNS 控制台添加记录：
+
+- 根域名，例如 `example.com`：通常添加 `A` 记录。
+- 子域名，例如 `www.example.com` 或 `blog.example.com`：通常添加 `CNAME` 记录。
+- 如果域名已被其他 Vercel 账号使用：可能需要先添加 `TXT` 记录验证所有权。
+- 如果使用通配符域名，例如 `*.example.com`：通常需要使用 nameservers 方式。
+
+建议同时添加根域名和 `www` 域名，然后在 Vercel 中设置一个主域名并开启跳转，避免搜索引擎看到两个重复站点。
+
+当前 GitHub Pages 用户主页部署时建议设置：
 
 ```bash
 SITE_URL=https://ehuhe.github.io
@@ -85,6 +107,12 @@ BASE_PATH=/仓库名/
 ```
 
 如果部署到用户主页仓库或自定义域名，`BASE_PATH` 通常保持 `/`。
+
+官方参考：
+
+- [Astro deploy to Vercel](https://docs.astro.build/en/guides/deploy/vercel/)
+- [Vercel Astro framework docs](https://vercel.com/docs/frameworks/frontend/astro)
+- [Vercel custom domains](https://vercel.com/docs/domains/working-with-domains/add-a-domain)
 
 ### 云服务器 Docker 方案
 

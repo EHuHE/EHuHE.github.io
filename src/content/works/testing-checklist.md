@@ -1,6 +1,6 @@
 ---
 title: "Static site release checklist"
-description: "Build, type-check, responsive layout, navigation, RSS, and deployment checks for the homepage."
+description: "Build, type-check, responsive layout, navigation, and deployment checks for the homepage."
 pubDate: 2026-05-30
 tags: ["Testing", "Release"]
 featured: true

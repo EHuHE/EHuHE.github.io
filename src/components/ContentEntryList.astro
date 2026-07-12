@@ -1,14 +1,5 @@
 ---
-import {
-  BookOpen,
-  Boxes,
-  Code2,
-  ExternalLink,
-  FileText,
-  Github,
-  Mail,
-  Rss,
-} from "lucide-astro";
+import IconFont from "./IconFont.astro";
 import { withBasePath } from "../lib/url";
 
 interface Entry {
@@ -25,29 +16,29 @@ interface Props {
 
 const { entries } = Astro.props;
 const icons = {
-  article: FileText,
-  project: Boxes,
-  github: Github,
-  mail: Mail,
-  rss: Rss,
-  tool: Code2,
+  article: "file-info",
+  project: "ai-design",
+  github: "github",
+  mail: "file-info",
+  rss: "link",
+  tool: "project-log",
 };
 ---
 
 <div class="content-entry-list" data-testid="content-entry-list">
   {
     entries.map((entry) => {
-      const Icon = icons[entry.icon] ?? BookOpen;
+      const iconName = icons[entry.icon] ?? "wenjian";
       return (
         <a class="content-entry" href={withBasePath(entry.href)} target={entry.external ? "_blank" : undefined} rel={entry.external ? "noreferrer" : undefined}>
           <span class="entry-icon" aria-hidden="true">
-            <Icon size={22} />
+            <IconFont name={iconName} size={22} />
           </span>
           <span>
             <strong>{entry.title}</strong>
             <small>{entry.description}</small>
           </span>
-          <ExternalLink size={16} aria-hidden="true" />
+          <IconFont name="arrow-top-right" size={16} />
         </a>
       );
     })

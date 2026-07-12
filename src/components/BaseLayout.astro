@@ -8,38 +8,59 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  bodyClass?: string;
 }
 
 const title = Astro.props.title
   ? `${Astro.props.title} | ${siteProfile.label}`
   : `${siteProfile.name} | ${siteProfile.label}`;
 const description = Astro.props.description ?? siteProfile.description;
+const bodyClass = Astro.props.bodyClass;
 const canonicalUrl = new URL(
   withBasePath(withoutBasePath(Astro.url.pathname)),
   Astro.site ?? Astro.url.origin,
 );
+const socialImageUrl = new URL(withBasePath("/og.png"), Astro.site ?? Astro.url.origin);
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" id="top">
+<html lang="en" data-theme="light" data-lang="en" id="top">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href={withBasePath("/favicon.svg")} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteProfile.label} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:width" content="1672" />
+    <meta property="og:image:height" content="941" />
+    <meta property="og:image:alt" content="He Hu — AI Safety, Cybersecurity, Academic Profile and Research Notes" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <title>{title}</title>
     <script is:inline>
       try {
-        const savedTheme = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = savedTheme ?? (prefersDark ? "dark" : "light");
+        const savedTheme = localStorage.getItem("theme-v2");
+        const theme = savedTheme === "dark" ? "dark" : "light";
         document.documentElement.dataset.theme = theme;
+        const savedLanguage = localStorage.getItem("language");
+        const language = savedLanguage === "zh" ? "zh" : "en";
+        document.documentElement.dataset.lang = language;
+        document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
       } catch {
         document.documentElement.dataset.theme = "light";
+        document.documentElement.dataset.lang = "en";
       }
     </script>
   </head>
-  <body>
+  <body class={bodyClass}>
     <a class="skip-link" href="#content">Skip to main content</a>
     <SiteHeader />
     <main id="content">

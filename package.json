@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro build",
+    "build:sites": "npm run build && node scripts/build-sites-worker.mjs",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
+    "sync:paper-logs": "node scripts/sync-paper-logs.mjs",
     "test": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",

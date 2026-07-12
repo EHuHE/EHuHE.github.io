@@ -1,4 +1,5 @@
 const themeToggleSelector = "[data-theme-toggle]";
+const languageToggleSelector = "[data-language-toggle]";
 const menuToggleSelector = "[data-menu-toggle]";
 const mobileNavSelector = "[data-mobile-nav]";
 const tagFilterSelector = "[data-tag-filter]";
@@ -9,7 +10,7 @@ function setTheme(theme: "light" | "dark") {
   document.documentElement.dataset.theme = theme;
 
   try {
-    localStorage.setItem("theme", theme);
+    localStorage.setItem("theme-v2", theme);
   } catch {
     // Theme still applies for the current page when persistent storage is blocked.
   }
@@ -30,6 +31,35 @@ function setupThemeToggle() {
   setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
 }
 
+function setLanguage(language: "en" | "zh") {
+  document.documentElement.dataset.lang = language;
+  document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+
+  try {
+    localStorage.setItem("language", language);
+  } catch {
+    // Language still applies for the current page when persistent storage is blocked.
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(languageToggleSelector).forEach((button) => {
+    button.setAttribute(
+      "aria-label",
+      language === "zh" ? "Switch to English" : "Switch to Chinese",
+    );
+  });
+}
+
+function setupLanguageToggle() {
+  document.querySelectorAll<HTMLButtonElement>(languageToggleSelector).forEach((button) => {
+    button.addEventListener("click", () => {
+      const currentLanguage = document.documentElement.dataset.lang === "zh" ? "zh" : "en";
+      setLanguage(currentLanguage === "zh" ? "en" : "zh");
+    });
+  });
+
+  setLanguage(document.documentElement.dataset.lang === "zh" ? "zh" : "en");
+}
+
 function setupMobileMenu() {
   const menuToggle = document.querySelector<HTMLButtonElement>(menuToggleSelector);
   const mobileNav = document.querySelector<HTMLElement>(mobileNavSelector);
@@ -38,21 +68,33 @@ function setupMobileMenu() {
     return;
   }
 
+  const openIcon = menuToggle.querySelector<HTMLElement>("[data-menu-open-icon]");
+  const closeIcon = menuToggle.querySelector<HTMLElement>("[data-menu-close-icon]");
+
+  function setMenuExpanded(isExpanded: boolean) {
+    menuToggle!.setAttribute("aria-expanded", String(isExpanded));
+    menuToggle!.setAttribute("aria-label", isExpanded ? "Close navigation menu" : "Open navigation menu");
+    mobileNav!.hidden = !isExpanded;
+
+    if (openIcon && closeIcon) {
+      openIcon.hidden = isExpanded;
+      closeIcon.hidden = !isExpanded;
+    }
+  }
+
   menuToggle.addEventListener("click", () => {
     const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
-    const nextExpanded = !isExpanded;
-
-    menuToggle.setAttribute("aria-expanded", String(nextExpanded));
-    menuToggle.setAttribute("aria-label", nextExpanded ? "Close navigation menu" : "Open navigation menu");
-    mobileNav.hidden = !nextExpanded;
-
-    const openIcon = menuToggle.querySelector<HTMLElement>("[data-menu-open-icon]");
-    const closeIcon = menuToggle.querySelector<HTMLElement>("[data-menu-close-icon]");
-    if (openIcon && closeIcon) {
-      openIcon.hidden = nextExpanded;
-      closeIcon.hidden = !nextExpanded;
-    }
+    setMenuExpanded(!isExpanded);
   });
+
+  const desktopBreakpoint = window.matchMedia("(min-width: 961px)");
+  desktopBreakpoint.addEventListener("change", () => {
+    setMenuExpanded(false);
+  });
+
+  if (desktopBreakpoint.matches) {
+    setMenuExpanded(false);
+  }
 }
 
 function normalizeTag(tag: string) {
@@ -132,6 +174,7 @@ function setupCopyButtons() {
 }
 
 setupThemeToggle();
+setupLanguageToggle();
 setupMobileMenu();
 setupPostFilters();
 setupCopyButtons();

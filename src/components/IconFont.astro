@@ -1,0 +1,17 @@
+---
+interface Props {
+  name: string;
+  size?: number;
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 18, label, class: className = "" } = Astro.props;
+---
+
+<i
+  class={`iconfont if-icon icon-${name} ${className}`}
+  style={`--if-size: ${size}px;`}
+  aria-hidden={label ? undefined : "true"}
+  aria-label={label}
+></i>
